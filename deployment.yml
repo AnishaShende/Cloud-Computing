@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: chatbot
-          image: anishashende/temp-image:latest
+          image: anishashende/demo-pipeline:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 5000 # If your app runs on 5000 inside the container (like FastAPI, Flask etc.)
