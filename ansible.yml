@@ -1,28 +1,14 @@
 - hosts: all
   become: true
   tasks:
-    - name: Delete old deployment remotely
-      ansible.builtin.shell: >
-        ssh -o StrictHostKeyChecking=no azureuser@4.157.243.168
-        "kubectl delete -f /home/azureuser/deployment.yml || true"
+    - name: delete old deployment
+      command: kubectl delete -f /home/azureuser/deployment.yml || true
 
-    - name: Apply new deployment remotely
-      ansible.builtin.shell: >
-        ssh -o StrictHostKeyChecking=no azureuser@4.157.243.168
-        "kubectl apply -f /home/azureuser/deployment.yml"
+    - name: delete old service
+      command: kubectl delete -f /home/azureuser/service.yml || true
 
-    # - name: delete old deployment
-    #   ansible.builtin.shell: |
-    #     ssh -o StrictHostKeyChecking=no -i ~/.ssh/webapp-server_key.pem azureuser@4.157.243.168 "kubectl delete -f /home/azureuser/deployment.yml || true"
+    - name: create new deployment
+      command: kubectl apply -f /home/azureuser/deployment.yml
 
-    # - name: delete old service
-    #   ansible.builtin.shell: |
-    #     ssh -o StrictHostKeyChecking=no -i ~/.ssh/webapp-server_key.pem azureuser@4.157.243.168 "kubectl delete -f /home/azureuser/service.yml || true"
-    #   # command: kubectl delete -f /home/azureuser/service.yml
-    #   # ignore_errors: true # Ignores errors if the resource is not found or fails to delete
-
-    # - name: create new deployment
-    #   command: kubectl apply -f /home/azureuser/deployment.yml
-
-    # - name: create new service
-    #   command: kubectl apply -f /home/azureuser/service.yml
+    - name: create new service
+      command: kubectl apply -f /home/azureuser/service.yml
