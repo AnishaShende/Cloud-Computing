@@ -23,9 +23,9 @@ def ask():
         "Content-Type": "application/json"
     }
     data = {
-        "model": "llama3-8b-8192",
+        "model": "gemma2-9b-it",
         "messages": [
-            {"role": "system", "content": "You are a helpful college assistant. Answer clearly and shortly."},
+            {"role": "system", "content": "You are a helpful AI assistant. Answer clearly and shortly. Keep the conversation engaging and fun."},
             {"role": "user", "content": user_message}
         ]
     }
