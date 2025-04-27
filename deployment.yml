@@ -1,20 +1,20 @@
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: mrdevops
+  name: chatbot
 spec:
-  replicas: 2
-  selector: # tells the controller which pods to watch/belong to
+  replicas: 1
+  selector:
     matchLabels:
-      app: mrdevops
+      app: chatbot
   template:
     metadata:
       labels:
-        app: mrdevops
+        app: chatbot
     spec:
       containers:
-        - name: mrdevops
-          image: vikashashoke/pipeline-demo
+        - name: chatbot
+          image: anishashende/temp-image:latest
           imagePullPolicy: Always
           ports:
-            - containerPort: 80
+            - containerPort: 5000 # If your app runs on 5000 inside the container (like FastAPI, Flask etc.)
