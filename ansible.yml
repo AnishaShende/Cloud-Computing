@@ -1,14 +1,17 @@
 - hosts: all
   become: true
+  environment:
+    KUBECONFIG: /home/azureuser/.kube/config
+
   tasks:
-    - name: delete old deployment
-      command: kubectl delete -f /home/azureuser/deployment.yml || true
+    - name: Delete old deployment
+      shell: kubectl delete -f /home/azureuser/deployment.yml
 
-    - name: delete old service
-      command: kubectl delete -f /home/azureuser/service.yml || true
+    - name: Delete old service
+      shell: kubectl delete -f /home/azureuser/service.yml
 
-    - name: create new deployment
-      command: kubectl apply -f /home/azureuser/deployment.yml
+    - name: Create new deployment
+      shell: kubectl apply -f /home/azureuser/deployment.yml
 
-    - name: create new service
-      command: kubectl apply -f /home/azureuser/service.yml
+    - name: Create new service
+      shell: kubectl apply -f /home/azureuser/service.yml
