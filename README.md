@@ -87,11 +87,11 @@ This project demonstrates a real-world **DevOps pipeline** for deploying a **pro
 ---
 
 ## 📸 (Optional Section) Screenshots
-![Screenshot 1](path/to/screenshot1.png)
-![Screenshot 2](path/to/screenshot2.png)
-![Screenshot 1](path/to/screenshot3.png)
-![Screenshot 2](path/to/screenshot4.png)
-![Screenshot 1](path/to/screenshot5.png)
+![Screenshot 1](screenshots/1.png)
+![Screenshot 2](screenshots/2.png)
+![Screenshot 1](screenshots/3.png)
+![Screenshot 2](screenshots/4.png)
+![Screenshot 1](screenshots/5.png)
 
 ---
 
