@@ -1,0 +1,54 @@
+node {
+    stage('Git checkout'){
+        git branch: 'main', url: 'https://github.com/YOUR_USERNAME/YOUR_REPO.git'
+    }
+    
+    stage('Send Dockerfile to Ansible server'){
+        sshagent(['ansible']) {
+           sh 'scp -r /var/lib/jenkins/workspace/demo-pipeline/* YOUR_USER@ANSIBLE_SERVER_IP:/home/YOUR_USER/'
+        }
+    }
+    
+    stage('Docker build image'){
+        sshagent(['ansible']) {
+            sh 'ssh -o StrictHostKeyChecking=no YOUR_USER@ANSIBLE_SERVER_IP "cd /home/YOUR_USER/ && docker image build -t $JOB_NAME:v1.$BUILD_ID ."'
+        }
+    }
+    
+    stage('Docker image tagging'){
+        sshagent(['ansible']) {
+           sh 'ssh -o StrictHostKeyChecking=no YOUR_USER@ANSIBLE_SERVER_IP "cd /home/YOUR_USER/ && docker image tag $JOB_NAME:v1.$BUILD_ID yourdockerhubuser/$JOB_NAME:v1.$BUILD_ID && docker image tag $JOB_NAME:v1.$BUILD_ID yourdockerhubuser/$JOB_NAME:latest"'
+        }
+    }
+    
+    stage('Push docker images to DockerHub'){
+        sshagent(['ansible']) {
+            withCredentials([string(credentialsId: 'dockerhub_password', variable: 'dockerhub_password')]) {
+                sh 'ssh -o StrictHostKeyChecking=no YOUR_USER@ANSIBLE_SERVER_IP "docker login -u yourdockerhubuser -p ${dockerhub_password}"'
+                sh 'ssh -o StrictHostKeyChecking=no YOUR_USER@ANSIBLE_SERVER_IP "docker image push yourdockerhubuser/$JOB_NAME:v1.$BUILD_ID && docker image push yourdockerhubuser/$JOB_NAME:latest && docker image rm yourdockerhubuser/$JOB_NAME:v1.$BUILD_ID yourdockerhubuser/$JOB_NAME:latest $JOB_NAME:v1.$BUILD_ID"'
+            }
+        }
+    }
+
+    /*
+    stage('Update deployment file') {
+        sshagent(['ansible']) {
+            sh '''
+            ssh -o StrictHostKeyChecking=no YOUR_USER@ANSIBLE_SERVER_IP "sed -i 's|image:.*|image: yourdockerhubuser/${JOB_NAME}:v1.${BUILD_ID}|' /home/YOUR_USER/deployment.yml"
+            '''
+        }
+    }
+    */
+
+    stage('Copy files from Ansible to Kubernetes server'){
+        sshagent(['kubernetes']) {
+            sh 'scp -r /var/lib/jenkins/workspace/demo-pipeline/* YOUR_USER@KUBERNETES_SERVER_IP:/home/YOUR_USER/'
+        }
+    }
+    
+    stage('Kubernetes deployment using Ansible'){
+        sshagent(['ansible']) {
+            sh 'ssh -o StrictHostKeyChecking=no YOUR_USER@ANSIBLE_SERVER_IP "cd /home/YOUR_USER/ && ansible-playbook ansible.yml"'
+        }
+    }
+}
